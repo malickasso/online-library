@@ -24,3 +24,9 @@ define('DB_CHARSET', 'utf8mb4');
 // --- Paramètres généraux de l'application ---
 define('APP_NAME', 'Readly');
 define('BASE_URL', '/bibliotheque_enligne/public');
+
+// --- Upload des images de couverture des livres ---
+// UPLOAD_DIR  : chemin disque réel où les fichiers sont physiquement enregistrés
+// UPLOAD_PATH : chemin relatif (à partir de public/assets/) utilisé pour générer les URLs
+define('UPLOAD_DIR', dirname(__DIR__) . '/public/assets/images/');
+define('UPLOAD_PATH', 'images/');

@@ -110,7 +110,7 @@ require __DIR__ . '/partials/header.php';
             <?php foreach ($nouveautes as $livre): ?>
             <article class="book-card">
                 <a href="details.php?id=<?= (int) $livre['id'] ?>">
-                    <div class="book-cover"></div>
+                    <img src="<?= couvertureUrl($livre['image'] ?? null) ?>" alt="<?= h($livre['titre']) ?>" class="book-cover">
                     <h3 class="book-title"><?= h($livre['titre']) ?></h3>
                     <p class="book-author"><?= h($livre['auteur']) ?></p>
                 </a>

@@ -41,6 +41,7 @@ require __DIR__ . '/../partials/header.php';
             <table class="admin-table">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>Titre</th>
                         <th>Auteur</th>
                         <th>Maison d'édition</th>
@@ -51,6 +52,10 @@ require __DIR__ . '/../partials/header.php';
                 <tbody>
                     <?php foreach ($livres as $livre): ?>
                     <tr>
+                        <td>
+                            <div class="admin-thumb" <?php if ($url = couvertureUrl($livre['image'])): ?>
+                                style="background-image:url('<?= h($url) ?>');" <?php endif; ?>></div>
+                        </td>
                         <td><?= h($livre['titre']) ?></td>
                         <td><?= h($livre['auteur']) ?></td>
                         <td><?= h($livre['maison_edition'] ?: '—') ?></td>

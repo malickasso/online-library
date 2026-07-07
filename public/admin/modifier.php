@@ -31,7 +31,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($nombreExemplaire < 0) {
         $erreur = 'Le nombre d\'exemplaires ne peut pas être négatif.';
     } else {
-        modifierLivre($id, $titre, $auteur, $description, $maisonEdition, $nombreExemplaire);
+        $nouvelleImage    = uploadImageLivre($_FILES['image'] ?? []);
+        $supprimerImage   = isset($_POST['supprimer_image']);
+
+        if ($nouvelleImage !== null) {
+            $image = $nouvelleImage;           // une nouvelle image a été envoyée
+        } elseif ($supprimerImage) {
+            $image = null;                     // l'admin a coché "supprimer l'image"
+        } else {
+            $image = $livre['image'];          // on garde l'image actuelle
+        }
+
+        modifierLivre($id, $titre, $auteur, $description, $maisonEdition, $nombreExemplaire, $image);
         header('Location: index.php');
         exit;
     }
@@ -52,7 +63,7 @@ require __DIR__ . '/../partials/header.php';
             <div class="form-error"><?= h($erreur) ?></div>
             <?php endif; ?>
 
-            <form method="post" action="modifier.php?id=<?= (int) $id ?>">
+            <form method="post" action="modifier.php?id=<?= (int) $id ?>" enctype="multipart/form-data">
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="titre">Titre *</label>
@@ -62,6 +73,25 @@ require __DIR__ . '/../partials/header.php';
                         <label class="form-label" for="auteur">Auteur *</label>
                         <input type="text" id="auteur" name="auteur" class="form-input" value="<?= h($auteur) ?>"
                             required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Image de couverture</label>
+                    <div class="image-preview-row">
+                        <div class="image-preview" id="image-preview" <?php if ($url = couvertureUrl($livre['image'])): ?>
+                            style="background-image:url('<?= h($url) ?>');" <?php endif; ?>></div>
+                        <div>
+                            <input type="file" id="image" name="image" class="form-input"
+                                accept="image/png, image/jpeg, image/webp">
+                            <p class="form-hint">Laissez vide pour conserver l'image actuelle.</p>
+                            <?php if ($livre['image']): ?>
+                            <label class="checkbox-row" style="margin-top:8px;">
+                                <input type="checkbox" name="supprimer_image" value="1">
+                                Supprimer l'image actuelle (afficher le visuel par défaut)
+                            </label>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 
@@ -88,5 +118,28 @@ require __DIR__ . '/../partials/header.php';
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.getElementById('image');
+        const preview = document.getElementById('image-preview');
+        if (!input || !preview) {
+            return;
+        }
+
+        input.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+            if (!file) {
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                preview.style.backgroundImage = 'url(' + event.target.result + ')';
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
