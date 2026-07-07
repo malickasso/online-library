@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📚 Readly — Bibliothèque en Ligne
+# Bibliothèque en Ligne
 
 Site web de bibliothèque numérique : recherche, fiches livres, liste de lecture personnelle
 et back-office d'administration.
@@ -9,8 +9,6 @@ et back-office d'administration.
 ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-green)
-
 </div>
 
 ---
@@ -30,19 +28,19 @@ et back-office d'administration.
 
 ---
 
-## ✨ Fonctionnalités
+## Fonctionnalités
 
-- 🏠 **Page d'accueil** avec présentation, recherche rapide et les 4 dernières nouveautés.
-- 🔍 **Recherche** de livres par titre ou par auteur.
-- 📖 **Fiche détail** d'un livre (titre, auteur, description, maison d'édition, disponibilité).
-- 🔐 **Authentification** : inscription, connexion, déconnexion (mots de passe hashés avec `password_hash`).
-- 📝 **Liste de lecture personnelle** : un lecteur connecté peut ajouter/retirer des livres, avec la date d'emprunt.
-- 🛠️ **Espace administrateur** protégé : ajouter, modifier et supprimer des livres de la bibliothèque.
-- 📱 Interface **responsive**, police **Montserrat**, design sobre (fond crème, accents vert clair).
+-  **Page d'accueil** avec présentation, recherche rapide et les 4 dernières nouveautés.
+-  **Recherche** de livres par titre ou par auteur.
+-  **Fiche détail** d'un livre (titre, auteur, description, maison d'édition, disponibilité).
+-  **Authentification** : inscription, connexion, déconnexion (mots de passe hashés avec `password_hash`).
+-  **Liste de lecture personnelle** : un lecteur connecté peut ajouter/retirer des livres, avec la date d'emprunt.
+-  **Espace administrateur** protégé : ajouter, modifier et supprimer des livres de la bibliothèque.
+-  Interface **responsive**, police **Montserrat**, design sobre (fond crème, accents vert clair).
 
 ---
 
-## 🗂️ Architecture du projet
+## Architecture du projet
 
 ```
 bibliotheque_online/
@@ -74,7 +72,7 @@ bibliotheque_online/
 
 ---
 
-## 🗃️ Base de données
+## Base de données
 
 Trois tables principales :
 
@@ -125,7 +123,7 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 
 ---
 
-## ⚙️ Installation (WAMP / XAMPP / Laragon)
+## Installation (WAMP / XAMPP / Laragon)
 
 1. **Cloner le dépôt** dans le dossier serveur (`www/` ou `htdocs/`) :
    ```bash
@@ -150,7 +148,7 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 
 ---
 
-## 👤 Créer un compte administrateur
+## Créer un compte administrateur
 
 1. Inscrivez-vous normalement via **`/public/register.php`**.
 2. Dans phpMyAdmin (onglet SQL), exécutez :
@@ -162,7 +160,7 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 
 ---
 
-## 🔐 Sécurité mise en place
+##  Sécurité mise en place
 
 - Mots de passe **hashés** avec `password_hash()` / vérifiés avec `password_verify()`.
 - Toutes les requêtes SQL utilisent des **requêtes préparées PDO** (protection contre les injections SQL).
@@ -173,7 +171,7 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 
 ---
 
-## 🛠️ Technologies utilisées
+## Technologies utilisées
 
 - HTML5 / CSS3 (police **Montserrat**, design responsive)
 - JavaScript (léger, `assets/js/app.js`)
@@ -182,7 +180,7 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 
 ---
 
-## 📌 Pistes d'amélioration possibles
+##  Pistes d'amélioration possibles
 
 - [ ] Empêcher l'emprunt d'un livre si `nombre_exemplaire = 0`.
 - [ ] Page "Mon profil" pour modifier ses informations personnelles.
@@ -191,14 +189,7 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 
 ---
 
-## 📄 Licence
-
-Ce projet est distribué sous licence **MIT** — libre d'utilisation, de modification et de partage,
-dans un cadre académique ou personnel.
-
----
-
-## ✍️ Auteur
+## Auteur
 
 Projet réalisé par **Abdou Malick Assouma** dans le cadre du projet D-CLIC.
 
