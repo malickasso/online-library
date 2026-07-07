@@ -28,7 +28,7 @@ function asset(string $path): string
 function getDernieresNouveautes(int $limite = 4): array
 {
     $pdo = getPDO();
-    $stmt = $pdo->prepare('SELECT id, titre, auteur, maison_edition FROM livres ORDER BY id DESC LIMIT :limite');
+    $stmt = $pdo->prepare('SELECT id, titre, auteur, maison_edition, image FROM livres ORDER BY id DESC LIMIT :limite');
     $stmt->bindValue(':limite', $limite, PDO::PARAM_INT);
     $stmt->execute();
 
@@ -52,11 +52,11 @@ function rechercherLivres(string $critere, string $q): array
     $colonne = $colonnesAutorisees[$critere] ?? 'titre';
 
     if ($q === '') {
-        $stmt = $pdo->query("SELECT id, titre, auteur, maison_edition FROM livres ORDER BY id DESC");
+        $stmt = $pdo->query("SELECT id, titre, auteur, maison_edition, image FROM livres ORDER BY id DESC");
         return $stmt->fetchAll();
     }
 
-    $sql = "SELECT id, titre, auteur, maison_edition FROM livres WHERE {$colonne} LIKE :q ORDER BY {$colonne} ASC";
+    $sql = "SELECT id, titre, auteur, maison_edition, image FROM livres WHERE {$colonne} LIKE :q ORDER BY {$colonne} ASC";
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':q', '%' . $q . '%', PDO::PARAM_STR);
     $stmt->execute();
@@ -272,14 +272,112 @@ function getTousLesLivresAdmin(): array
 }
 
 /**
+ * Construit l'URL publique d'une couverture de livre, ou null si le livre n'en a pas.
+ * À utiliser dans les templates : couvertureUrl($livre['image'])
+ */
+function couvertureUrl(?string $image): ?string
+{
+    if ($image === null || $image === '') {
+        return asset('images/default-book.jpg');
+    }
+
+    $imageNormalizee = ltrim(str_replace('\\', '/', $image), '/');
+    $imageNormalizee = preg_replace('#^(?:public/)?assets/images/#i', '', $imageNormalizee) ?? $imageNormalizee;
+    $imageNormalizee = preg_replace('#^images/#i', '', $imageNormalizee) ?? $imageNormalizee;
+
+    if ($imageNormalizee === '') {
+        return asset('images/default-book.jpg');
+    }
+
+    return asset('images/' . ltrim($imageNormalizee, '/'));
+}
+
+/**
+ * Gère l'upload d'une image de couverture envoyée via $_FILES['image'].
+ * Retourne le nom du fichier à enregistrer en base, ou null si aucun fichier valide n'a été envoyé.
+ */
+function uploadImageLivre(array $fichier): ?string
+{
+    if (!isset($fichier['error']) || $fichier['error'] === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+
+    if ($fichier['error'] !== UPLOAD_ERR_OK) {
+        return null;
+    }
+
+    $extensionsAutorisees = ['jpg', 'jpeg', 'png', 'webp'];
+    $extension = strtolower(pathinfo($fichier['name'] ?? 'image', PATHINFO_EXTENSION));
+
+    if (!in_array($extension, $extensionsAutorisees, true)) {
+        return null;
+    }
+
+    if (($fichier['size'] ?? 0) > 5 * 1024 * 1024) {
+        return null;
+    }
+
+    if (!isset($fichier['tmp_name']) || $fichier['tmp_name'] === '') {
+        return null;
+    }
+
+    if (!file_exists($fichier['tmp_name'])) {
+        return null;
+    }
+
+    if (!is_readable($fichier['tmp_name'])) {
+        return null;
+    }
+
+    if (!is_dir(UPLOAD_DIR)) {
+        mkdir(UPLOAD_DIR, 0775, true);
+    }
+
+    $nomFichier = 'livre-' . uniqid('', true) . '.' . $extension;
+    $destination = UPLOAD_DIR . $nomFichier;
+
+    $imageSource = @imagecreatefromstring(file_get_contents($fichier['tmp_name']));
+    if ($imageSource === false) {
+        return null;
+    }
+
+    $largeurSource = imagesx($imageSource);
+    $hauteurSource = imagesy($imageSource);
+    $largeurCible = 640;
+    $hauteurCible = 900;
+
+    $ratio = min($largeurCible / $largeurSource, $hauteurCible / $hauteurSource);
+    $largeurNouvelle = max(1, (int) round($largeurSource * $ratio));
+    $hauteurNouvelle = max(1, (int) round($hauteurSource * $ratio));
+
+    $imageRedimensionnee = imagecreatetruecolor($largeurNouvelle, $hauteurNouvelle);
+    imagealphablending($imageRedimensionnee, true);
+    imagesavealpha($imageRedimensionnee, true);
+    imagecopyresampled($imageRedimensionnee, $imageSource, 0, 0, 0, 0, $largeurNouvelle, $hauteurNouvelle, $largeurSource, $hauteurSource);
+
+    if ($extension === 'jpg' || $extension === 'jpeg') {
+        imagejpeg($imageRedimensionnee, $destination, 85);
+    } elseif ($extension === 'png') {
+        imagepng($imageRedimensionnee, $destination, 8);
+    } else {
+        imagewebp($imageRedimensionnee, $destination, 85);
+    }
+
+    imagedestroy($imageSource);
+    imagedestroy($imageRedimensionnee);
+
+    return $nomFichier;
+}
+
+/**
  * Ajoute un nouveau livre. Retourne l'id créé.
  */
-function ajouterLivre(string $titre, string $auteur, string $description, string $maisonEdition, int $nombreExemplaire): int
+function ajouterLivre(string $titre, string $auteur, string $description, string $maisonEdition, int $nombreExemplaire, ?string $image = null): int
 {
     $pdo = getPDO();
     $stmt = $pdo->prepare(
-        'INSERT INTO livres (titre, auteur, description, maison_edition, nombre_exemplaire)
-         VALUES (:titre, :auteur, :description, :maison, :nombre)'
+        'INSERT INTO livres (titre, auteur, description, maison_edition, nombre_exemplaire, image)
+         VALUES (:titre, :auteur, :description, :maison, :nombre, :image)'
     );
     $stmt->execute([
         ':titre'       => $titre,
@@ -287,6 +385,7 @@ function ajouterLivre(string $titre, string $auteur, string $description, string
         ':description' => $description,
         ':maison'      => $maisonEdition,
         ':nombre'      => $nombreExemplaire,
+        ':image'       => $image,
     ]);
 
     return (int) $pdo->lastInsertId();
@@ -295,13 +394,13 @@ function ajouterLivre(string $titre, string $auteur, string $description, string
 /**
  * Met à jour un livre existant.
  */
-function modifierLivre(int $id, string $titre, string $auteur, string $description, string $maisonEdition, int $nombreExemplaire): void
+function modifierLivre(int $id, string $titre, string $auteur, string $description, string $maisonEdition, int $nombreExemplaire, ?string $image = null): void
 {
     $pdo = getPDO();
     $stmt = $pdo->prepare(
         'UPDATE livres
          SET titre = :titre, auteur = :auteur, description = :description,
-             maison_edition = :maison, nombre_exemplaire = :nombre
+             maison_edition = :maison, nombre_exemplaire = :nombre, image = :image
          WHERE id = :id'
     );
     $stmt->execute([
@@ -310,6 +409,7 @@ function modifierLivre(int $id, string $titre, string $auteur, string $descripti
         ':description' => $description,
         ':maison'      => $maisonEdition,
         ':nombre'      => $nombreExemplaire,
+        ':image'       => $image,
         ':id'          => $id,
     ]);
 }

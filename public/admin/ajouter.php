@@ -20,9 +20,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($nombreExemplaire < 0) {
         $erreur = 'Le nombre d\'exemplaires ne peut pas être négatif.';
     } else {
-        ajouterLivre($titre, $auteur, $description, $maisonEdition, $nombreExemplaire);
-        header('Location: index.php');
-        exit;
+        $image = uploadImageLivre($_FILES['image'] ?? []);
+        if ($image === null && isset($_FILES['image']) && is_array($_FILES['image']) && ($_FILES['image']['error'] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_OK) {
+            $erreur = 'L’image n’a pas pu être enregistrée. Vérifie le type de fichier, sa taille et les permissions du dossier.';
+        }
+        ajouterLivre($titre, $auteur, $description, $maisonEdition, $nombreExemplaire, $image);
+        if ($erreur === '') {
+            header('Location: index.php');
+            exit;
+        }
     }
 }
 
@@ -41,7 +47,18 @@ require __DIR__ . '/../partials/header.php';
             <div class="form-error"><?= h($erreur) ?></div>
             <?php endif; ?>
 
-            <form method="post" action="ajouter.php">
+            <form method="post" action="ajouter.php" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form-label" for="image">Image de couverture</label>
+                    <div class="image-preview-row">
+                        <div class="image-preview" id="image-preview"></div>
+                        <div>
+                            <input type="file" id="image" name="image" class="form-input"
+                                accept="image/png, image/jpeg, image/webp">
+                            <p class="form-hint">Format JPG, PNG ou WEBP, 5 Mo maximum. Si aucune image n'est ajoutée, un visuel par défaut sera affiché.</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label class="form-label" for="titre">Titre *</label>
@@ -77,5 +94,29 @@ require __DIR__ . '/../partials/header.php';
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const input = document.getElementById('image');
+        const preview = document.getElementById('image-preview');
+        if (!input || !preview) {
+            return;
+        }
+
+        input.addEventListener('change', function () {
+            const file = this.files && this.files[0];
+            if (!file) {
+                preview.style.backgroundImage = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                preview.style.backgroundImage = 'url(' + event.target.result + ')';
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

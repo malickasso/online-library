@@ -48,7 +48,7 @@ require __DIR__ . '/partials/header.php';
         <a href="results.php" class="back-link">&larr; Retour aux résultats</a>
 
         <div class="details-layout" style="margin-top:24px;">
-            <div class="details-cover"></div>
+            <img src="<?= couvertureUrl($livre['image'] ?? null) ?>" alt="<?= h($livre['titre']) ?>" class="details-cover">
 
             <div class="details-info">
                 <h1 class="page-title"><?= h($livre['titre']) ?></h1>
