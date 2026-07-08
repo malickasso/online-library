@@ -61,6 +61,7 @@ bibliotheque_online/
 │   │   └── modifier.php            Formulaire de modification
 │   └── assets/
 │       ├── css/style.css
+        ├── images/            
 │       └── js/app.js
 ├── app/
 │   ├── config.php               Constantes (BDD, session, nom de l'app)
@@ -94,8 +95,9 @@ CREATE TABLE livres (
     auteur             VARCHAR(100) NOT NULL,
     description        TEXT,
     maison_edition     VARCHAR(100),
-    nombre_exemplaire  INT NOT NULL DEFAULT 0
-);
+    nombre_exemplaire  INT NOT NULL DEFAULT 0,
+    image              VARCHAR(255) DEFAULT NULL
+) ENGINE=InnoDB;
 
 CREATE TABLE lecteurs (
     id       INT AUTO_INCREMENT PRIMARY KEY,
@@ -104,7 +106,7 @@ CREATE TABLE lecteurs (
     email    VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role     ENUM('lecteur', 'admin') NOT NULL DEFAULT 'lecteur'
-);
+) ENGINE=InnoDB;
 
 CREATE TABLE liste_lecture (
     id_livre      INT NOT NULL,
@@ -112,9 +114,13 @@ CREATE TABLE liste_lecture (
     date_emprunt  DATE NOT NULL,
     date_retour   DATE NULL,
     PRIMARY KEY (id_livre, id_lecteur),
-    FOREIGN KEY (id_livre) REFERENCES livres(id) ON DELETE CASCADE,
-    FOREIGN KEY (id_lecteur) REFERENCES lecteurs(id) ON DELETE CASCADE
-);
+    CONSTRAINT fk_liste_livre
+        FOREIGN KEY (id_livre) REFERENCES livres(id)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_liste_lecteur
+        FOREIGN KEY (id_lecteur) REFERENCES lecteurs(id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB;
 ```
 
 Le fichier complet, avec les données de démonstration, se trouve dans [`sql/schema.sql`](sql/schema.sql).
@@ -131,7 +137,7 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
    ```
 
 2. **Créer la base de données** : importer [`sql/schema.sql`](sql/schema.sql) dans phpMyAdmin (ou via la ligne de commande MySQL).
-   Cela crée la base `bibliotheque_online`, les 3 tables, et ajoute 6 livres de démonstration.
+   Cela crée la base `bibliotheque_online`, les 3 tables, et ajoute 10 livres de démonstration.
 
 3. **Configurer la connexion** dans `app/config.php` si besoin (utilisateur/mot de passe MySQL) :
    ```php
@@ -183,9 +189,10 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 ##  Pistes d'amélioration possibles
 
 - [ ] Empêcher l'emprunt d'un livre si `nombre_exemplaire = 0`.
-- [ ] Page "Mon profil" pour modifier ses informations personnelles.
+- [ ] Page de profil permettant au lecteur de modifier ses informations.
 - [ ] Pagination des résultats de recherche et de la liste des livres en admin.
-- [ ] Upload d'une image de couverture pour chaque livre.
+- [ ] Notifications ou rappels de date de retour.
+- [ ] Ajouter de vrais livres pour lecture (obtention des droits d'auteurs)
 
 ---
 
