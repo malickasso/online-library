@@ -58,12 +58,16 @@ CREATE TABLE liste_lecture (
 -- Données de démonstration
 -- ----------------------------
 INSERT INTO livres (titre, auteur, description, maison_edition, nombre_exemplaire) VALUES
-('Ecological Systems', 'Dr. Aris Thorne', 'Une étude approfondie des écosystèmes et de leur équilibre naturel.', 'GreenPress', 5),
-('The Quiet Mind', 'S. J. Miller', 'Un guide sur la pleine conscience et la sérénité intérieure.', 'Mindful Editions', 3),
-('Sustainable Design', 'Liam Chen', 'Les principes du design durable appliqués à l’architecture moderne.', 'EcoBuild', 4),
-('Zero Waste Living', 'Anita Ray', 'Adopter un mode de vie sans déchet, étape par étape.', 'Archive Press', 6),
-('Digital Archiving', 'Archive Press', 'Les meilleures pratiques pour numériser et conserver des documents.', 'Archive Press', 2),
-('The Modern Scholar', 'Eduard Weiss', 'Un panorama des méthodes de recherche académique contemporaines.', 'Scholar House', 3);
+('L''Aventure ambiguë', 'Cheikh Hamidou Kane', 'Un roman sénégalais qui explore le conflit entre les valeurs traditionnelles africaines et l''éducation occidentale.', 'Julliard', 5),
+('Une si longue lettre', 'Mariama Bâ', 'Un roman épistolaire abordant la condition de la femme et les réalités sociales au Sénégal.', 'Nouvelles Éditions Africaines', 6),
+('Le Soleil des indépendances', 'Ahmadou Kourouma', 'Une critique des désillusions qui ont suivi les indépendances africaines.', 'Éditions du Seuil', 4),
+('Les Bouts de bois de Dieu', 'Ousmane Sembène', 'Une œuvre majeure retraçant la grève des cheminots du Dakar-Niger.', 'Le Livre Contemporain', 5),
+('Le Pauvre Christ de Bomba', 'Mongo Beti', 'Une satire de la colonisation et de l''évangélisation en Afrique centrale.', 'Robert Laffont', 3),
+('L''Enfant noir', 'Camara Laye', 'Un récit autobiographique décrivant l''enfance de l''auteur en Guinée.', 'Plon', 4),
+('Mission terminée', 'Mongo Beti', 'Un roman humoristique mettant en lumière les contradictions entre tradition et modernité.', 'Buchet-Chastel', 3),
+('Allah n''est pas obligé', 'Ahmadou Kourouma', 'L''histoire poignante d''un enfant soldat dans les guerres civiles d''Afrique de l''Ouest.', 'Éditions du Seuil', 5),
+('Le Monde s''effondre', 'Chinua Achebe', 'Un classique de la littérature africaine racontant les bouleversements causés par la colonisation au Nigeria.', 'Heinemann', 7),
+('Americanah', 'Chimamanda Ngozi Adichie', 'Un roman contemporain sur l''identité, l''immigration et les relations raciales.', 'Alfred A. Knopf', 6);
 
 -- ----------------------------
 -- Créer un compte administrateur
