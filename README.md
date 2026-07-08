@@ -1,6 +1,6 @@
 <div align="center">
 
-# Bibliothèque en Ligne
+# Readly - Bibliothèque en Ligne
 
 Site web de bibliothèque numérique : recherche, fiches livres, liste de lecture personnelle
 et back-office d'administration.
@@ -176,4 +176,4 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 
 Projet réalisé par **Abdou Malick Assouma** dans le cadre du projet D-CLIC.
 
-[GitHub](https://github.com/malickasso) · [LinkedIn](https://www.linkedin.com/in/abdoumalick-assouma-63a878270)
+[GitHub](https://github.com/malickasso) · [LinkedIn](https://www.linkedin.com/in/abdou-malick-assouma-63a878270/)
