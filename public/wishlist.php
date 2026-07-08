@@ -57,7 +57,8 @@ require __DIR__ . '/partials/header.php';
         <div class="results-grid">
             <?php foreach ($livres as $livre): ?>
             <article class="book-card">
-                <div class="book-cover"></div>
+                <img src="<?= couvertureUrl($livre['image'] ?? null) ?>" alt="<?= h($livre['titre']) ?>"
+                    class="book-cover">
                 <h3 class="book-title"><?= h($livre['titre']) ?></h3>
                 <p class="book-author"><?= h($livre['auteur']) ?></p>
                 <p class="book-author">Emprunté le <?= h(date('d/m/Y', strtotime($livre['date_emprunt']))) ?></p>
