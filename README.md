@@ -20,10 +20,7 @@ et back-office d'administration.
 - [Base de données](#️-base-de-données)
 - [Installation](#-installation-wamp--xampp--laragon)
 - [Créer un compte administrateur](#-créer-un-compte-administrateur)
-- [Sécurité](#-sécurité-mise-en-place)
 - [Technologies](#-technologies-utilisées)
-- [Pistes d'amélioration](#-pistes-damélioration-possibles)
-- [Licence](#-licence)
 - [Auteur](#️-auteur)
 
 ---
@@ -166,33 +163,12 @@ Le fichier complet, avec les données de démonstration, se trouve dans [`sql/sc
 
 ---
 
-##  Sécurité mise en place
-
-- Mots de passe **hashés** avec `password_hash()` / vérifiés avec `password_verify()`.
-- Toutes les requêtes SQL utilisent des **requêtes préparées PDO** (protection contre les injections SQL).
-- Le nom de colonne de recherche (`titre`/`auteur`) passe par une **liste blanche** plutôt que d'être injecté directement.
-- Toutes les sorties HTML passent par la fonction `h()` (échappement `htmlspecialchars`), protection contre le XSS.
-- Pattern **Post/Redirect/Get** sur les suppressions et retraits pour éviter les doublons en cas de rafraîchissement.
-- Pages protégées par `exigerConnexion()` (liste de lecture) et `exigerAdmin()` (espace admin).
-
----
-
 ## Technologies utilisées
 
 - HTML5 / CSS3 (police **Montserrat**, design responsive)
 - JavaScript (léger, `assets/js/app.js`)
 - PHP 8+ (PDO, sessions, programmation procédurale organisée par fonctions)
 - MySQL / MariaDB
-
----
-
-##  Pistes d'amélioration possibles
-
-- [ ] Empêcher l'emprunt d'un livre si `nombre_exemplaire = 0`.
-- [ ] Page de profil permettant au lecteur de modifier ses informations.
-- [ ] Pagination des résultats de recherche et de la liste des livres en admin.
-- [ ] Notifications ou rappels de date de retour.
-- [ ] Ajouter de vrais livres pour lecture (obtention des droits d'auteurs)
 
 ---
 
